@@ -1,4 +1,4 @@
-package br.eb.mil.decex.timetable;
+package br.eb.mil.decex.util;
 
 import java.util.Vector;
 
@@ -37,38 +37,34 @@ public class Matrix3D<T> {
 		content.clear();
 	}
 
-	public Vector<T> getAllContent() {
+	public Vector<T> getContent() {
 		return content;
 	}
 
 	public T getContent(int i, int j, int k) {
-		return content.get(getIndex(i,j,k));
+		return content.get(getIndex(i, j, k));
 	}
 
-	public void print() {
+	@Override
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < P; i++) {
-			sb.append("\n Página: ").append(i + 1);
-			for (int j = 0; j < L; j++) {
-				for (int k = 0; k < C; k++)
-					sb.append(content.get(getIndex(i,j,k)) + "\t");
-				sb.append("\n");
-			}
+			sb.append("\nPágina: ").append(i + 1).append("\n");
+			sb.append(get2DPart(i).toString());
 		}
-		System.out.println(sb.toString());
+		return sb.toString();
 	}
 
 	public void setContent(int i, int j, int k, T t) {
-		content.set(getIndex(i,j,k), t);
+		content.set(getIndex(i, j, k), t);
 	}
 
 	/**
-	 * Converte as coordenadas da matriz em 
-	 * um índice para o vetor de conteúdo
+	 * Converte as coordenadas da matriz em um índice para o vetor de conteúdo
 	 * 
-	 * @param i -> página
-	 * @param j -> linha
-	 * @param k -> coluna
+	 * @param i-> página
+	 * @param j-> linha
+	 * @param k-> coluna
 	 * @return
 	 */
 	private int getIndex(int i, int j, int k) {
@@ -79,27 +75,22 @@ public class Matrix3D<T> {
 		return (((i * L) + j) * C) + k;
 	}
 
-	public void Init(T t) {
+	public void init(T t) {
 		this.temp = t;
 		clearContent();
 		for (int i = 0; i < P * L * C; i++)
-			getAllContent().add(i, t);
+			getContent().add(i, t);
 	}
 
 	public Matrix2D<T> get2DPart(int i) {
-		Matrix2D<T> M2DForm;
-		M2DForm = new Matrix2D<T>(L, C);
-		M2DForm.Init(getT());
-		for (int j = 0; j < L; j++) {
-			for (int k = 0; k < C; k++)
-				M2DForm.setContent(j, k, getContent(i, j, k));
-		}
-		return M2DForm;
+		Matrix2D<T> matrix2D;
+		matrix2D = new Matrix2D<T>(L, C);
+		matrix2D.getContent().addAll(0, getContent().
+				subList(getIndex(i, 0, 0), getIndex(i, L - 1, C - 1) + 1));
+		return matrix2D;
 	}
 
-	public void set2DPart(int i, Matrix2D<T> M2DForm) {
-		for (int j = 0; j < M2DForm.getR(); j++)
-			for (int k = 0; k < M2DForm.getC(); k++)
-				setContent(i, j, k, M2DForm.getContent(j, k));
+	public void set2DPart(int i, Matrix2D<T> matrix2D) {
+		getContent().addAll(getIndex(i, 0, 0), matrix2D.getContent());
 	}
 }

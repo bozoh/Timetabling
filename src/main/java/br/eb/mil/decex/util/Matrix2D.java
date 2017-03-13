@@ -1,17 +1,17 @@
-package br.eb.mil.decex.timetable;
+package br.eb.mil.decex.util;
 
 import java.util.Vector;
 
 public class Matrix2D<T> {
-	private final int L; //Linha
-	private final int C; //Coluna
+	private final int L; // Linha
+	private final int C; // Coluna
 	private final Vector<T> content;
 
-	public Matrix2D(int R, int C) {
-		this.L = R;
+	public Matrix2D(int L, int C) {
+		this.L = L;
 		this.C = C;
 		content = new Vector<T>();
-		content.setSize(R * C);
+		content.setSize(L * C);
 	}
 
 	public int getLinha() {
@@ -35,16 +35,15 @@ public class Matrix2D<T> {
 	}
 
 	/**
-	 * Converte as coordenadas da matriz em 
-	 * um índice para o vetor de conteúdo
-	 * @param i -->Linha
-	 * @param j -->Coluna
+	 * Converte as coordenadas da matriz em um índice para o vetor de conteúdo
+	 * 
+	 * @param i-->Linha
+	 * @param j-->Coluna
 	 * @return
 	 */
 	private int getIndex(int i, int j) {
 		// A conversão é
 		// i*size(j)+j
-
 		return (i * C) + j;
 	}
 
@@ -52,18 +51,20 @@ public class Matrix2D<T> {
 		content.set(getIndex(i, j), t);
 	}
 
-	public void Init(T t) {
+	public void init(T t) {
 		clearContent();
 		for (int i = 0; i < L * C; i++)
 			getContent().add(i, t);
 	}
 
-	public void print() {
-		 for (int j = 0; j < C; j++){
+	@Override
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		for (int j = 0; j < C; j++) {
 			for (int i = 0; i < L; i++)
-				System.out.print(content.get(getIndex(i, j)) + "{//\\\\}");
-			System.out.print("\n");
+				sb.append(content.get(getIndex(i, j))).append("\t");
+			sb.append("\n");
 		}
-
+		return sb.toString();
 	}
 }
