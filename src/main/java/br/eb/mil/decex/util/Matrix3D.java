@@ -67,7 +67,7 @@ public class Matrix3D<T> {
 	 * @param k-> coluna
 	 * @return
 	 */
-	private int getIndex(int i, int j, int k) {
+	public int getIndex(int i, int j, int k) {
 		// Simplificação de:
 		// i*(size(j)*size(k) + j*(size(k)) +k
 		// (i*size(j)+j)*size(k) + k

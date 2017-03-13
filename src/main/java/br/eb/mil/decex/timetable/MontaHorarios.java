@@ -32,33 +32,27 @@ public class MontaHorarios {
 
 		horarios = new Quadro(professores.size(), turmas.size(), diasPorSemana, temposAluaPorDia);
 
-		Stack<Integer>[] allocTable = initAllocTable();
-
 		for (Turma turma : turmas) {
 			for (Professor professor : professores) {
 				Set<Disciplina> disciplinas = professor.getDisciplinas();
-				// List<Integer> ordemHorarios =
-				// genOrdemHorarios(horarios.getNumHorarios());
+				 List<Integer> ordemHorarios = genOrdemHorarios(diasPorSemana*temposAluaPorDia);
 				for (Disciplina disciplina : disciplinas) {
 					int quantHorariosParaAlloc = getQuantHorarios(disciplina);
 					// Adicionar randomicamente
 					while (disciplina.getCargaHoraria() != 0) {
 						boolean alloc = false;
 						Stack<Integer> tries = new Stack<Integer>();
-						tries.addAll(genOrdemHorarios(temposAluaPorDia));
-						Integer diaSemana=tries.pop();
+						tries.addAll(ordemHorarios);
+						//Integer diaSemana=tries.pop();
 						while (!tries.isEmpty() && !alloc) {
-							if (allocTable[diaSemana].size() < quantHorariosParaAlloc)
-								continue;
-							//Integer horarioInicial = tries.pop();
-							Integer horarioInicial = allocTable[diaSemana].pop();
+							Integer horarioInicial = tries.pop();
 							alloc = allocaHorarios(turma.getId(), professor, horarioInicial,
 									quantHorariosParaAlloc, disciplina);
 
 							horarios.alloc(turma.getId(), professor.getId(), horarioInicial.intValue(),
 									quantHorariosParaAlloc, disciplina);
 							if (alloc)
-								updateListaHorario(allocTable, diaSemana, horarioInicial,
+								updateListaHorario(ordemHorarios, horarioInicial,
 										quantHorariosParaAlloc);
 						}
 						if (!alloc) {
@@ -102,12 +96,12 @@ public class MontaHorarios {
 		return alloc;
 	}
 
-	private void updateListaHorario(Stack<Integer>[] allocTable,int diaSemana, int horarioInicial,
+	private void updateListaHorario(List<Integer> ordemHorarios, int horarioInicial,
 			int quantHorariosParaAlloc) {
 		for (int i = horarioInicial; i < horarioInicial + quantHorariosParaAlloc; i++) {
 			Integer target = new Integer(i);
-			if (allocTable[diaSemana].contains(target))
-				allocTable[diaSemana].remove(target);
+			if (ordemHorarios.contains(target))
+				ordemHorarios.remove(target);
 		}
 	}
 

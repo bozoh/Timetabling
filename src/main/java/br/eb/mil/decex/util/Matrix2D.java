@@ -41,7 +41,7 @@ public class Matrix2D<T> {
 	 * @param j-->Coluna
 	 * @return
 	 */
-	private int getIndex(int i, int j) {
+	public int getIndex(int i, int j) {
 		// A conversão é
 		// i*size(j)+j
 		return (i * C) + j;
