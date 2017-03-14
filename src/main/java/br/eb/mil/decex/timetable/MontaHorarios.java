@@ -24,12 +24,8 @@ public class MontaHorarios {
 	int temposAluaPorDia;
 	private Quadro horarios;
 
-	private Disciplina jaAllocado;
 
 	public Quadro montaHorarios() {
-		this.jaAllocado = new Disciplina();
-		jaAllocado.setCodigo("XXXX");
-
 		horarios = new Quadro(professores.size(), turmas.size(), diasPorSemana, temposAluaPorDia);
 
 		for (Turma turma : turmas) {
@@ -37,9 +33,10 @@ public class MontaHorarios {
 				Set<Disciplina> disciplinas = professor.getDisciplinas();
 				 List<Integer> ordemHorarios = genOrdemHorarios(diasPorSemana*temposAluaPorDia);
 				for (Disciplina disciplina : disciplinas) {
-					int quantHorariosParaAlloc = getQuantHorarios(disciplina);
+					int cargaHorariaTotalDisciplina= disciplina.getCargaHoraria();
+					int quantHorariosParaAlloc = getQuantHorarios(cargaHorariaTotalDisciplina);
 					// Adicionar randomicamente
-					while (disciplina.getCargaHoraria() != 0) {
+					while (cargaHorariaTotalDisciplina != 0) {
 						boolean alloc = false;
 						Stack<Integer> tries = new Stack<Integer>();
 						tries.addAll(ordemHorarios);
@@ -58,8 +55,9 @@ public class MontaHorarios {
 						if (!alloc) {
 							quantHorariosParaAlloc--;
 						} else {
-							disciplina.addCargaHorariaAlocada(quantHorariosParaAlloc);
-							quantHorariosParaAlloc = getQuantHorarios(disciplina);
+							//disciplina.addCargaHorariaAlocada(quantHorariosParaAlloc);
+							cargaHorariaTotalDisciplina-=quantHorariosParaAlloc;
+							quantHorariosParaAlloc = getQuantHorarios(cargaHorariaTotalDisciplina);
 						}
 					}
 				}
@@ -105,10 +103,10 @@ public class MontaHorarios {
 		}
 	}
 
-	private int getQuantHorarios(Disciplina disciplina) {
+	private int getQuantHorarios(int  cargaHoraria) {
 		int MAX_TEMPO_AULA = 3;
 		int MIN_TEMPO_AULA_DESEJADO = 2;
-		int quantTempo = disciplina.getCargaHoraria();
+		int quantTempo = cargaHoraria;
 		if (quantTempo > MAX_TEMPO_AULA) {
 			if (quantTempo - MIN_TEMPO_AULA_DESEJADO >= MAX_TEMPO_AULA)
 				return MAX_TEMPO_AULA;

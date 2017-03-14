@@ -1,7 +1,7 @@
 package br.eb.mil.decex.timetable;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import br.eb.mil.decex.util.Matrix2D;
 import br.eb.mil.decex.util.Matrix3D;
@@ -18,6 +18,8 @@ public class Quadro {
 	private final int temposAluaPorDia;
 	@Getter
 	private final int numHorarios;
+	@Getter
+	private int fitness;
 
 	private final Matrix3D<Disciplina> horarios;
 
@@ -34,81 +36,40 @@ public class Quadro {
 	public String printQuadroHorariosTurmas() {
 		StringBuilder ret = new StringBuilder();
 		for (int i = 0; i < numTurmas; i++) {
-			ret.append(printQuadroHorarioTurma(i));
+			ret.append(flattenTurma(i));
 			ret.append("\n\n###########################################\n\n");
 		}
 		return ret.toString();
 	}
 
-	private String printQuadroHorarioTurma(int turma) {
-		StringBuilder ret = new StringBuilder();
-		Disciplina[][] quadro = flattenTurma(turma);
-		for (int t = 0; t < temposAluaPorDia; t++) {
-			for (int d = 0; d < diasPorSemana; d++) {
-				if (quadro[t][d] != null)
-					ret.append(quadro[t][d].getCodigo());
-				else
-					ret.append("XXXX");
-
-				ret.append(" | ");
-			}
-			ret.append("\n--------------------------------------------------------\n");
-		}
-		return ret.toString();
-	}
-
-	private Disciplina[][] flattenTurma(int turma) {
-		Matrix2D<Disciplina> maux = horarios.get2DPart(turma);
-		Disciplina[][] horarios = new Disciplina[numProfessores][numHorarios];
-		for (int p = 0; p < horarios.length; p++) {
-			maux.getContent().subList(p * numHorarios, p * numHorarios + numHorarios).toArray(horarios[p]);
-//			Arrays.copyOf(original, newLength)
-//			horarios[p] = (Disciplina[]) aaa;
-		}
-		// Disciplina[][] quadro = new
-		// Disciplina[temposAluaPorDia][diasPorSemana];
-		// int diaSemana = 0;
-		// int tempoAula = 0;
-		//
-		// for (int h = 0; h < numHorarios; h++) {
-		// tempoAula = h % temposAluaPorDia;
-		// diaSemana = h / temposAluaPorDia;
-		// for (int p = 0; p < numProfessores; p++) {
-		// if (horarios[turma][p][h] != null) {
-		// quadro[tempoAula][diaSemana] = horarios[turma][p][h];
-		// break;
-		// }
-		// }
-		// }
-
+	public Matrix2D<Disciplina> flattenTurma(int turma) {
+		int idxInicial = this.horarios.getIndex(turma, 0, 0);
+		int idxFinal = this.horarios.getIndex(turma, numProfessores - 1, numHorarios - 1);
+		List<Disciplina> horarios = this.horarios.getContent().subList(idxInicial, idxFinal + 1);
 		return flatten(horarios);
 	}
 
-	private Disciplina[][] flattenProfessor(int professor) {
-		Disciplina[][] horarios = new Disciplina[numTurmas][numHorarios];
-		for (int t = 0; t < horarios.length; t++) {
-			int inicio = this.horarios.getIndex(t, professor, 0);
-			int fim = this.horarios.getIndex(t, professor, numHorarios + 1);
-			horarios[t] = (Disciplina[]) this.horarios.getContent().subList(inicio, fim).toArray();
+	public Matrix2D<Disciplina> flattenProfessor(int professor) {
+		List<Disciplina> horarios = new LinkedList<Disciplina>();
+		for (int t = 0; t < numTurmas; t++) {
+			int idxInicial = this.horarios.getIndex(t, professor, 0);
+			int idxFinal = this.horarios.getIndex(t, professor, numHorarios - 1);
+			horarios.addAll(this.horarios.getContent().subList(idxInicial, idxFinal + 1));
 		}
 		return flatten(horarios);
 	}
 
-	private Disciplina[][] flatten(Disciplina[][] horarios) {
-		Disciplina[][] quadro = new Disciplina[temposAluaPorDia][diasPorSemana];
-		int diaSemana = 0;
-		int tempoAula = 0;
-		for (int i = 0; i < horarios.length; i++) {
-			for (int h = 0; h < horarios[i].length; h++) {
-				if (horarios[i][h] != null) {
-					tempoAula = h % temposAluaPorDia;
-					diaSemana = h / temposAluaPorDia;
-					quadro[tempoAula][diaSemana] = horarios[i][h];
-				}
-			}
-		}
+	private Matrix2D<Disciplina> flatten(List<Disciplina> horarios) {
+		Matrix2D<Disciplina> retVal = new Matrix2D<>(diasPorSemana, temposAluaPorDia);
 
-		return quadro;
+		int idx = 0;
+		for (Disciplina d : horarios) {
+			if (d != null) {
+				retVal.getContent().set(idx % numHorarios, d);
+			}
+			idx++;
+		}
+		return retVal;
 	}
 
 	public boolean canAlloc(int turma, int professor, int horarionInicial, int quantidaHorario) {
@@ -121,7 +82,7 @@ public class Quadro {
 			return false;
 
 		for (int i = horarionInicial; i < horarionInicial + quantidaHorario; i++) {
-			if (horarios.getContent(turma,professor,i) != null)
+			if (horarios.getContent(turma, professor, i) != null)
 				// Já alocado
 				return false;
 		}
@@ -143,6 +104,9 @@ public class Quadro {
 		return ret;
 	}
 
+	public void addFitness(int value) {
+		this.fitness += value;
+	}
 	// public Disciplina[][][] getHorarios() {
 	// return horarios;
 	// }

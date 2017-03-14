@@ -16,10 +16,11 @@ public class Disciplina  {
 	Quadro horarios;
 	Set<Horario> restrincoes;
 
-	public void addCargaHorariaAlocada(int quantTempos) {
-		cargaHoraria -= quantTempos;
-	}
-
+	
+@Override
+public String toString() {
+	return this.getCodigo();
+}
 	
 
 	
