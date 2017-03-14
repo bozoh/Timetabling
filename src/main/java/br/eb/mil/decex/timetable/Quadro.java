@@ -33,6 +33,15 @@ public class Quadro {
 		this.horarios = new Matrix3D<>(this.numTurmas, this.numProfessores, this.numHorarios);
 	}
 
+	public Quadro(Matrix3D<Disciplina> horarios) {
+		this.horarios = horarios;
+		this.numTurmas = horarios.getPagina();
+		this.numProfessores = horarios.getLinha();
+		this.numHorarios = horarios.getColuna();
+		this.diasPorSemana = 5;
+		this.temposAluaPorDia = this.numHorarios / this.diasPorSemana;
+	}
+
 	public String printQuadroHorariosTurmas() {
 		StringBuilder ret = new StringBuilder();
 		for (int i = 0; i < numTurmas; i++) {
@@ -105,7 +114,7 @@ public class Quadro {
 	}
 
 	public void addFitness(int value) {
-		this.fitness += value;
+		this.fitness = value;
 	}
 	// public Disciplina[][][] getHorarios() {
 	// return horarios;

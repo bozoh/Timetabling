@@ -1,6 +1,8 @@
 package br.eb.mil.decex.timetable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Main {
@@ -152,16 +154,27 @@ public class Main {
 		FitnessCalculator fc = new FitnessCalculator();
 		int fitness=0;
 		int tries=0;
-		while(fitness!=30){
-			tries++;
+		
+		List<Quadro> populacao = new ArrayList<Quadro>();
+		for (int i = 0; i < 30; i++) {
 			MontaHorarios mh = new MontaHorarios(turmas, professores, 5, 6);
-			Quadro q = mh.montaHorarios();
-			fitness=fc.orphanFitness(q);
-			if (fitness == 30) {
-				System.out.println("------>"+tries);
-				System.out.println(q.printQuadroHorariosTurmas());
-			}
+			populacao.add(mh.montaHorarios());
 		}
+		Solucao s = new Solucao(populacao, 30);
+		s.init();
+		
+		
+		
+//		while(fitness!=30){
+//			tries++;
+//			
+//			Quadro q = mh.montaHorarios();
+//			fitness=fc.orphanFitness(q);
+//			if (fitness == 30) {
+//				System.out.println("------>"+tries);
+//				System.out.println(q.printQuadroHorariosTurmas());
+//			}
+//		}
 	}
 
 }
