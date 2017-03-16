@@ -1,5 +1,6 @@
 package br.eb.mil.decex.timetable;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Set;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		System.out.println("Inicializando");
 
 		// Matrix3D<String> m3 = new Matrix3D<>(3, 2, 10);
@@ -156,7 +157,7 @@ public class Main {
 		int tries=0;
 		
 		List<Quadro> populacao = new ArrayList<Quadro>();
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 60; i++) {
 			MontaHorarios mh = new MontaHorarios(turmas, professores, 5, 6);
 			populacao.add(mh.montaHorarios());
 		}

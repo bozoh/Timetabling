@@ -54,6 +54,42 @@ public class Matrix3D<T> {
 		}
 		return sb.toString();
 	}
+	
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + C;
+		result = prime * result + L;
+		result = prime * result + P;
+		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Matrix3D))
+			return false;
+		Matrix3D other = (Matrix3D) obj;
+		if (C != other.C)
+			return false;
+		if (L != other.L)
+			return false;
+		if (P != other.P)
+			return false;
+		if (content == null) {
+			if (other.content != null)
+				return false;
+		} else if (!content.equals(other.content))
+			return false;
+		return true;
+	}
 
 	public void setContent(int i, int j, int k, T t) {
 		content.set(getIndex(i, j, k), t);

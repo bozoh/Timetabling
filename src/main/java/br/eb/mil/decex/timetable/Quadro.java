@@ -116,8 +116,28 @@ public class Quadro {
 	public void addFitness(int value) {
 		this.fitness = value;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Quadro))
+			return false;
+		Quadro other = (Quadro) obj;
+		if (horarios == null) {
+			if (other.horarios != null)
+				return false;
+		} else if (!horarios.equals(other.horarios))
+			return false;
+		return true;
+	}
 	// public Disciplina[][][] getHorarios() {
 	// return horarios;
 	// }
+	
+	
+	
 
 }
