@@ -161,7 +161,7 @@ public class Main {
 			MontaHorarios mh = new MontaHorarios(turmas, professores, 5, 6);
 			populacao.add(mh.montaHorarios());
 		}
-		Solucao s = new Solucao(populacao, 30);
+		Solver s = new Solver(populacao, 30);
 		s.init();
 		
 		

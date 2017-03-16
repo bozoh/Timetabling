@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import br.eb.mil.decex.util.Matrix3D;
 
-public class Solucao {
+public class Solver {
 
 	private List<Quadro> populacao;
 	private double objetivo;
@@ -29,7 +29,7 @@ public class Solucao {
 	public static final String ANSI_CYAN = "\u001B[36m";
 	public static final String ANSI_WHITE = "\u001B[37m";
 
-	public Solucao(List<Quadro> populacao, int objetivo) {
+	public Solver(List<Quadro> populacao, int objetivo) {
 		this.populacao = populacao;
 		this.objetivo = objetivo;
 		this.fit = new FitnessCalculator();
